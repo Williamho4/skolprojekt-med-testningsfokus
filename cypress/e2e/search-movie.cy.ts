@@ -60,13 +60,16 @@ describe('search for movie', () => {
 
   it.only('see more works', () => {
     const movieName = 'f1'
+    const genre = 'race'
+    const runtime = '1 hour'
+    const year = '2025'
 
     cy.mockMovie(
       movieName,
       'https://m.media-amazon.com/images/M/MV5BZTYwYjJhNzYtY2ZiZS00ZmYxLWJkZjctYjRlNGIxYjI3ZTU0XkEyXkFqcGc@._V1_SX300.jpg',
-      'Race',
-      '1 hour',
-      '2025'
+      genre,
+      runtime,
+      year
     )
 
     cy.get('[data-id="movie-search-input"]').type(movieName)
@@ -76,8 +79,19 @@ describe('search for movie', () => {
 
     cy.location('pathname').should(
       'match',
-      new RegExp(`/movie-details/.*${movieName}.*`, 'i')
+      new RegExp(`/movie-details/${movieName}`, 'i')
     )
+
+    cy.get('[data-id="movie-details-poster"]').should(
+      'have.attr',
+      'src',
+      'https://m.media-amazon.com/images/M/MV5BZTYwYjJhNzYtY2ZiZS00ZmYxLWJkZjctYjRlNGIxYjI3ZTU0XkEyXkFqcGc@._V1_SX300.jpg'
+    )
+
+    cy.get('[data-id="movie-detail-title"]').should('have.text', movieName)
+    cy.get('[data-id="movie-details-genre"]').should('have.text', genre)
+    cy.get('[data-id="movie-details-runtime"]').should('have.text', runtime)
+    cy.get('[data-id="movie-details-year"]').should('have.text', year)
   })
 
   it('no movie found error', () => {
