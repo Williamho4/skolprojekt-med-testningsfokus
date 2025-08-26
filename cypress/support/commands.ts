@@ -35,3 +35,15 @@
 //     }
 //   }
 // }
+
+declare namespace Cypress {
+  interface Chainable {
+    mockMovie(
+      movieName: string,
+      posterUrl?: string,
+      genre?: string,
+      runtime?: string,
+      releaseYear?: string
+    ): Chainable<void>
+  }
+}

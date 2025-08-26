@@ -7,6 +7,8 @@ function Home() {
   const [search, setSearch] = useState<string | undefined>()
   const { movie, loading, error } = useFetchMovie(search)
 
+  console.log(movie)
+
   return (
     <main className="home-page">
       <h1>Search for a movie</h1>
@@ -22,7 +24,11 @@ function Home() {
       {movie && (
         <div className="movie-card">
           {movie.Poster ? (
-            <img src={movie.Poster} alt={movie.Title} />
+            <img
+              data-id="home-page-movie-img"
+              src={movie.Poster}
+              alt={movie.Title}
+            />
           ) : (
             <p>No poster</p>
           )}
