@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDebounce } from 'use-debounce'
+import '../css/movieDetails.css'
 
 export function useFetchMovie(search: string | undefined) {
   const [movie, setMovie] = useState<any>(null)

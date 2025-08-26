@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import { useFetchMovie } from '../hooks/useFetchMovie'
 import { Link } from 'react-router-dom'
+import '../css/home.css'
 
 function Home() {
   const [search, setSearch] = useState<string | undefined>()
   const { movie, loading, error } = useFetchMovie(search)
 
   return (
-    <main>
+    <main className="home-page">
+      <h1>Search for a movie</h1>
       <input
         type="text"
         value={search}
@@ -17,14 +19,16 @@ function Home() {
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
       {movie && (
-        <div>
+        <div className="movie-card">
           {movie.Poster ? (
             <img src={movie.Poster} alt={movie.Title} />
           ) : (
             <p>No poster</p>
           )}
-          <p>{movie.Title}</p>
-          <Link to={`/movie-details/${movie.Title}`}>See more</Link>
+          <div>
+            <p>{movie.Title}</p>
+            <Link to={`/movie-details/${movie.Title}`}>See more</Link>
+          </div>
         </div>
       )}
     </main>

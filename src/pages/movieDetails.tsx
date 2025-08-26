@@ -8,7 +8,7 @@ function MovieDetails() {
   console.log(movie)
 
   return (
-    <main>
+    <main className="movie-detail-page">
       <h1>{title}</h1>
 
       {loading && <p>Loading...</p>}
@@ -16,9 +16,20 @@ function MovieDetails() {
       {movie && (
         <div>
           {movie.Poster ? (
-            <div>
+            <div className="movie-details">
               <img src={movie.Poster} alt={movie.Title} />
-              <p>{movie.Plot}</p>
+              <p className="movie-summary">{movie.Plot}</p>
+
+              <div className="movie-info">
+                <h2>Genre</h2>
+                <p>{movie.Genre}</p>
+
+                <h2>Runtime</h2>
+                <p>{movie.Runtime}</p>
+
+                <h2>Release Year</h2>
+                <p>{movie.Year}</p>
+              </div>
             </div>
           ) : (
             <p>No poster</p>
