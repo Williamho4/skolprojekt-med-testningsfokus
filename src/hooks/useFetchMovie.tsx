@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useDebounce } from 'use-debounce'
-import '../css/movieDetails.css'
 
 export function useFetchMovie(search: string | undefined) {
   const [movie, setMovie] = useState<any>(null)
@@ -23,7 +22,7 @@ export function useFetchMovie(search: string | undefined) {
         )
 
         if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`)
+          throw new Error('Something went wrong please try again')
         }
 
         const result = await response.json()

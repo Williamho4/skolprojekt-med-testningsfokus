@@ -1,3 +1,7 @@
+const movieInput = '[data-id="movie-search-input"]'
+const homePageMovieTitle = '[data-id="home-page-movie-title"]'
+const homePageError = '[data-id="home-page-error"]'
+
 Cypress.Commands.add(
   'mockMovie',
   (title, posterUrl, genre, runtime, releaseYear) => {
@@ -24,10 +28,8 @@ describe('search for movie', () => {
 
   movies.forEach((title) => {
     it(`search works for ${title}`, () => {
-      cy.get('[data-id="movie-search-input"]').type(title)
-      cy.get('[data-id="home-page-movie-title"]').contains(
-        new RegExp(title, 'i')
-      )
+      cy.get(movieInput).type(title)
+      cy.get(homePageMovieTitle).contains(new RegExp(title, 'i'))
     })
   })
 
@@ -39,12 +41,10 @@ describe('search for movie', () => {
       'https://m.media-amazon.com/images/M/MV5BMTg5NzY0MzA2MV5BMl5BanBnXkFtZTYwNDc3NTc2._V1_SX300.jpg'
     )
 
-    cy.get('[data-id="movie-search-input"]').type(movieName)
+    cy.get(movieInput).type(movieName)
     cy.wait(`@mockedMovie-${movieName}`)
 
-    cy.get('[data-id="home-page-movie-title"]').contains(
-      new RegExp(movieName, 'i')
-    )
+    cy.get(homePageMovieTitle).contains(new RegExp(movieName, 'i'))
     cy.get('[data-id="home-page-movie-img"]').should(
       'have.attr',
       'src',
@@ -53,12 +53,12 @@ describe('search for movie', () => {
   })
 
   it('shows loading spinner', () => {
-    cy.get('[data-id="movie-search-input"]').type('cars')
+    cy.get(movieInput).type('cars')
     cy.get('[data-id="home-page-loading-spinner"]').should('exist')
-    cy.get('[data-id="home-page-movie-title"]').contains(/cars/i)
+    cy.get(homePageMovieTitle).contains(/cars/i)
   })
 
-  it.only('see more works', () => {
+  it('see more works', () => {
     const movieName = 'f1'
     const genre = 'race'
     const runtime = '1 hour'
@@ -72,7 +72,7 @@ describe('search for movie', () => {
       year
     )
 
-    cy.get('[data-id="movie-search-input"]').type(movieName)
+    cy.get(movieInput).type(movieName)
     cy.wait(`@mockedMovie-${movieName}`)
 
     cy.get('[data-id="see-more-btn"]').click()
@@ -102,25 +102,25 @@ describe('search for movie', () => {
       },
     }).as('mockMovieNotFound')
 
-    cy.get('[data-id="movie-search-input"]').type('dwadwadwadwwd')
+    cy.get(movieInput).type('dwadwadwadwwd')
 
     cy.wait('@mockMovieNotFound')
 
-    cy.get('[data-id="home-page-error"]')
+    cy.get(homePageError)
       .should('exist')
       .should('contain.text', 'No movie found')
   })
 
-  it.only('api server error', () => {
+  it('api server error', () => {
     cy.intercept('GET', 'http://www.omdbapi.com/**', {
       statusCode: 500,
     }).as('mockServerError')
 
-    cy.get('[data-id="movie-search-input"]').type('dwadwadwadwwd')
+    cy.get(movieInput).type('cars')
 
     cy.wait('@mockServerError')
 
-    cy.get('[data-id="home-page-error"]').should(
+    cy.get(homePageError).should(
       'have.text',
       'Something went wrong please try again'
     )
