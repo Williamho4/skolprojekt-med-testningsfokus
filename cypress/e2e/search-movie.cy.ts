@@ -95,10 +95,34 @@ describe('search for movie', () => {
   })
 
   it('no movie found error', () => {
+    cy.intercept('GET', 'http://www.omdbapi.com/**', {
+      statusCode: 200,
+      body: {
+        Response: 'False',
+      },
+    }).as('mockMovieNotFound')
+
     cy.get('[data-id="movie-search-input"]').type('dwadwadwadwwd')
+
+    cy.wait('@mockMovieNotFound')
 
     cy.get('[data-id="home-page-error"]')
       .should('exist')
       .should('contain.text', 'No movie found')
+  })
+
+  it.only('api server error', () => {
+    cy.intercept('GET', 'http://www.omdbapi.com/**', {
+      statusCode: 500,
+    }).as('mockServerError')
+
+    cy.get('[data-id="movie-search-input"]').type('dwadwadwadwwd')
+
+    cy.wait('@mockServerError')
+
+    cy.get('[data-id="home-page-error"]').should(
+      'have.text',
+      'Something went wrong please try again'
+    )
   })
 })

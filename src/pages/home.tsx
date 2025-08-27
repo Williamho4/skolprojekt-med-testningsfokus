@@ -20,7 +20,9 @@ function Home() {
       />
 
       {loading && <p data-id="home-page-loading-spinner">Loading...</p>}
-      {error && <p data-id="home-page-error">{error}</p>}
+      {error && (
+        <p data-id="home-page-error">Something went wrong please try again</p>
+      )}
       {movie && (
         <div className="movie-card">
           {movie.Poster ? (
