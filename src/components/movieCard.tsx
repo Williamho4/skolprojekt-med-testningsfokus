@@ -3,7 +3,7 @@ import type { Movie } from '../utils/types'
 import styles from '../css/movie-card.module.css'
 
 type MovieCardProps = {
-  movie: Movie
+  movie: Pick<Movie, 'Title' | 'Poster'>
 }
 
 function MovieCard({ movie }: MovieCardProps) {
@@ -16,7 +16,7 @@ function MovieCard({ movie }: MovieCardProps) {
           alt={movie.Title}
         />
       ) : (
-        <p>No poster</p>
+        <p data-id="home-page-no-poster-text">No poster</p>
       )}
       <div>
         <p data-id="home-page-movie-title">{movie.Title}</p>
