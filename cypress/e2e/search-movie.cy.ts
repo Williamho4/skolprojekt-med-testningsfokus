@@ -1,6 +1,6 @@
 const movieInput = '[data-id="movie-search-input"]'
 const homePageMovieTitle = '[data-id="home-page-movie-title"]'
-const homePageError = '[data-id="home-page-error"]'
+const homePageError = '[data-id="error-text"]'
 
 Cypress.Commands.add(
   'mockMovie',
@@ -54,7 +54,7 @@ describe('search for movie', () => {
 
   it('shows loading spinner', () => {
     cy.get(movieInput).type('cars')
-    cy.get('[data-id="home-page-loading-spinner"]').should('exist')
+    cy.get('[data-id="loading-spinner"]').should('exist')
     cy.get(homePageMovieTitle).contains(/cars/i)
   })
 
