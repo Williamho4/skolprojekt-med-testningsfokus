@@ -4,6 +4,7 @@ module.exports = {
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',
     './.storybook/**/*.{js,ts,jsx,tsx,mdx}',
+    './cypress/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {},
