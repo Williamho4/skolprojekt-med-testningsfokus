@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDebounce } from 'use-debounce'
+import { isValidSearch } from '../utils/validator'
 
 export function useFetchMovie(search: string | undefined) {
   const [movie, setMovie] = useState<any>(null)
@@ -9,6 +10,12 @@ export function useFetchMovie(search: string | undefined) {
 
   useEffect(() => {
     if (!debouncedSearch) {
+      setMovie(null)
+      return
+    }
+
+    if (!isValidSearch(debouncedSearch)) {
+      setError('Invalid characters in search')
       setMovie(null)
       return
     }
