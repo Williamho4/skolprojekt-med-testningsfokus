@@ -10,6 +10,7 @@ export function useFetchMovie(search: string | undefined) {
 
   useEffect(() => {
     if (!debouncedSearch) {
+      setError(null)
       setMovie(null)
       return
     }

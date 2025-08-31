@@ -119,6 +119,16 @@ describe('search for movie', () => {
       .should('contain.text', 'Invalid characters in search')
   })
 
+  it.only('no error on empty input', () => {
+    cy.get(movieInput).type('#$!GH')
+    cy.get(homePageError)
+      .should('exist')
+      .should('contain.text', 'Invalid characters in search')
+
+    cy.get(movieInput).clear()
+    cy.get(homePageError).should('not.exist')
+  })
+
   it('api server error', () => {
     cy.intercept('GET', 'http://www.omdbapi.com/**', {
       statusCode: 500,
