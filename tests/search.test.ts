@@ -5,10 +5,27 @@ type Movie = {
   Poster?: string
 }
 
-async function mockMovieApi(page: Page, title?: string, poster?: string) {
+async function mockMovieApi(
+  page: Page,
+  {
+    statusCode = 200,
+    title,
+    poster,
+    delayAPI = false,
+  }: {
+    statusCode?: number
+    title?: string
+    poster?: string
+    delayAPI?: boolean
+  }
+) {
   await page.route('http://www.omdbapi.com/?i*', async (route) => {
+    if (delayAPI === true) {
+      await new Promise((r) => setTimeout(r, 1000))
+    }
+
     await route.fulfill({
-      status: 200,
+      status: statusCode,
       contentType: 'application/json',
       body: JSON.stringify({
         Title: title,
@@ -18,8 +35,16 @@ async function mockMovieApi(page: Page, title?: string, poster?: string) {
   })
 }
 
-async function searchForMovieWithMockData(page: Page, movie: Movie) {
-  await mockMovieApi(page, movie.Title, movie.Poster)
+async function searchForMovieWithMockData(
+  page: Page,
+  movie: Movie,
+  delayAPI?: boolean
+) {
+  await mockMovieApi(page, {
+    title: movie.Title,
+    poster: movie.Poster,
+    delayAPI,
+  })
   await page.getByTestId('movie-search-input').fill(movie.Title)
 }
 
@@ -49,6 +74,36 @@ test.describe('Search for movie', () => {
     })
   })
 
+  test('No movie found error', async ({ page }) => {
+    await page.route('http://www.omdbapi.com/?i*', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          Response: 'False',
+        }),
+      })
+    })
+
+    await page.getByTestId('movie-search-input').fill('E')
+
+    await expect(page.getByTestId('error-text')).toHaveText('No movie found')
+  })
+
+  test('MovieApi error', async ({ page }) => {
+    await page.route('http://www.omdbapi.com/?i*', async (route) => {
+      await route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+      })
+    })
+
+    await page.getByTestId('movie-search-input').fill('E')
+    await expect(page.getByTestId('error-text')).toHaveText(
+      'Something went wrong please try again'
+    )
+  })
+
   test('shows movies poster', async ({ page }) => {
     await searchForMovieWithMockData(page, movieWithPoster)
     await expect(page.getByTestId('home-page-movie-img')).toHaveAttribute(
@@ -62,6 +117,13 @@ test.describe('Search for movie', () => {
     await expect(page.getByTestId('home-page-no-poster-text')).toHaveText(
       /No poster/
     )
+  })
+
+  test('loading spinner visible', async ({ page }) => {
+    await searchForMovieWithMockData(page, movieWithPoster, true)
+
+    await expect(page.getByTestId('loading-spinner')).toBeVisible()
+    await expect(page.getByTestId('loading-spinner')).not.toBeVisible()
   })
 
   test('see more navigates to correct path', async ({ page }) => {
