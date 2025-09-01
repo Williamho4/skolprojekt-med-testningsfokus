@@ -119,7 +119,7 @@ describe('search for movie', () => {
       .should('contain.text', 'Invalid characters in search')
   })
 
-  it.only('no error on empty input', () => {
+  it('error resets', () => {
     cy.get(movieInput).type('#$!GH')
     cy.get(homePageError)
       .should('exist')
